@@ -27,7 +27,7 @@ public class SampleModel {
         String time = String.valueOf(new Date().getTime());
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getSampleBean("{\"information\":\"bd_web_api\",\"command\":\"redhallwill\",\"userno\":\"2017082107581886\",\"accessToken\":\"4cc4baaf8bf7a71773423b0ed6398aeb\",\"token\":\"Ar3H8Juqw23LEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                .getSampleBean("{\"information\":\"bd_web_api\",\"command\":\"redhallwill\",\"userno\":\"2017082107581886\",\"accessToken\":\"4cc4baaf8bf7a71773423b0ed6398aeb\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
                         String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }
@@ -41,9 +41,9 @@ public class SampleModel {
                 .compose(new IoMainSchedule<>());
     }
 
-    public Observable<GradBean> requestGrad(String id, String userNo) {
+    public Observable<GradBean> requestGrad(String id, String userNo, String accessToken) {
         String time = String.valueOf(new Date().getTime());
-        String parameter = String.format(Locale.CHINA, "{\"information\":\"bd_web_api\",\"command\":\"grab\",\"userno\":\"%s\",\"id\":\"%s\",\"platform\":\"html\",\"version\":\"5.2.36\",\"productName\":\"lzcp\"}", userNo, id);
+        String parameter = String.format(Locale.CHINA, "{\"information\":\"bd_web_api\",\"command\":\"grab\",\"userno\":\"%s\",\"id\":\"%s\",\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.36\",\"productName\":\"lzcp\"}", userNo, id, accessToken);
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
                 .getGradBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))
@@ -65,17 +65,17 @@ public class SampleModel {
         long l = new Date().getTime();
         long l1 = l / 10000 * 10000 + 10000;
         String time = String.valueOf(l);
-        String parameter = String.format(Locale.CHINA, "{\"command\":\"queryTheme\",\"activityId\":\"1518172027989\",\"productName\":\"lzcp\",\"channel\":\"780\",\"timeStamp\":%s}",  l1 + "");
+        String parameter = String.format(Locale.CHINA, "{\"command\":\"queryTheme\",\"activityId\":\"1518172027989\",\"productName\":\"lzcp\",\"channel\":\"780\",\"timeStamp\":%s}", l1 + "");
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
                 .getStrBean(parameter, time, String.format(Locale.CHINA, "jQuery111003212321644024907_%s", time))
                 .compose(new IoMainSchedule<>());
     }
 
-    public Observable<GradBean> requestGet(String id, String userNo) {
+    public Observable<GradBean> requestGet(String id, String userNo, String accessToken) {
         String time = String.valueOf(new Date().getTime());
         String parameter = String.format(Locale.CHINA,
-                "{\"information\":\"bd_web_api\",\"command\":\"reddetail\",\"userno\":\"%s\",\"id\":\"%s\",\"start\":0,\"size\":50,\"platform\":\"html\",\"version\":\"5.2.30\",\"productName\":\"lzcp\"}", userNo, id);
+                "{\"information\":\"bd_web_api\",\"command\":\"reddetail\",\"userno\":\"%s\",\"id\":\"%s\",\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"start\":0,\"size\":50,\"platform\":\"html\",\"version\":\"5.2.30\",\"productName\":\"lzcp\"}", userNo, id, accessToken);
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
                 .getGradBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))

@@ -94,8 +94,10 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     private void getNames() {
         String names = (String) SharePreUtil.getData(this, "name", "");
         String userNos = (String) SharePreUtil.getData(this, "userNo", "");
+        String accessToken = (String) SharePreUtil.getData(this, "accessToken", "");
         LogUtil.e(names);
         LogUtil.e(userNos);
+        LogUtil.e(accessToken);
         if (!TextUtils.equals("", names)) {
             assert names != null;
             Observable.fromIterable(Arrays.asList(names.split(",")))
@@ -113,14 +115,17 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
 
     private void getUserNo(String id) {
         String userNos = (String) SharePreUtil.getData(this, "userNo", "");
+        String accessToken = (String) SharePreUtil.getData(this, "accessToken", "");
         LogUtil.e(userNos);
+        LogUtil.e(accessToken);
         if (!TextUtils.equals("", userNos)) {
             assert userNos != null;
-            Observable.fromIterable(Arrays.asList(userNos.split(",")))
-                    .compose(new IoMainSchedule<>())
-                    .subscribe(s ->
-                            presenter.requestGrad(id, s)
-                    ,throwable -> {});
+            assert accessToken != null;
+            List<String> userNosList = Arrays.asList(userNos.split(","));
+            List<String> accessTokensList = Arrays.asList(accessToken.split(","));
+            for (int i = 0; i < userNosList.size(); i++) {
+                presenter.requestGrad(id, userNosList.get(i), accessTokensList.get(i));
+            }
         }
     }
 

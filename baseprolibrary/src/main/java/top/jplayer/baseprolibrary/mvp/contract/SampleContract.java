@@ -15,9 +15,9 @@ public interface SampleContract {
     interface ISamplePresenter extends IContract.IPresenter {
         void requestHBList();
 
-        void requestGrad(String id, String userNo);
+        void requestGrad(String id, String userNo,String accessToken);
 
-        void requestGet(String id, String userNo);
+        void requestGet(String id, String userNo,String accessToken);
 
         void addAccount(String phone, String password);
     }

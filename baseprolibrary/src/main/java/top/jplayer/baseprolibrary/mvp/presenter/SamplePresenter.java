@@ -53,27 +53,27 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
     }
 
     @Override
-    public void requestGrad(String id, String userNo) {
-        Disposable subscribe = sampleModel.requestGrad(id, userNo).subscribe(gradBean ->
+    public void requestGrad(String id, String userNo, String accessToken) {
+        Disposable subscribe = sampleModel.requestGrad(id, userNo,accessToken).subscribe(gradBean ->
         {
             if (TextUtils.equals("0000", gradBean.errorCode)) {
-                requestGet(id, userNo);
+                requestGet(id, userNo, accessToken);
             } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
-                requestGrad(id, userNo);
+                requestGrad(id, userNo, accessToken);
             }
         });
         addSubscription(subscribe);
     }
 
     @Override
-    public void requestGet(String id, String userNo) {
-        Disposable disposable = sampleModel.requestGet(id, userNo).subscribe(gradBean -> {
+    public void requestGet(String id, String userNo, String accessToken) {
+        Disposable disposable = sampleModel.requestGet(id, userNo,accessToken).subscribe(gradBean -> {
             if (TextUtils.equals("0000", gradBean.errorCode)) {
                 ToastUtils.init().showSuccessToast(mIView, "抢到了，关闭该界面吧");
             } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
-                requestGet(id, userNo);
+                requestGet(id, userNo,accessToken);
             }
-        }, throwable -> requestGet(id, userNo));
+        }, throwable -> requestGet(id, userNo,accessToken));
         addSubscription(disposable);
     }
 
@@ -85,6 +85,7 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
                         ToastUtils.init().showSuccessToast(mIView, String.format(Locale.CHINA, "%s-登陆成功", result.name));
                         String userNo = (String) SharePreUtil.getData(mIView, "userNo", "");
                         String name = (String) SharePreUtil.getData(mIView, "name", "");
+                        String accessToken = (String) SharePreUtil.getData(mIView, "accessToken", "");
                         if (TextUtils.equals("", userNo)) {
                             userNo = result.userNo;
                         } else {
@@ -95,8 +96,14 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
                         } else {
                             name = name + "," + result.name;
                         }
+                        if (TextUtils.equals("", accessToken)) {
+                            accessToken = result.accessToken;
+                        } else {
+                            accessToken = accessToken + "," + result.accessToken;
+                        }
                         SharePreUtil.saveData(mIView, "userNo", userNo);
                         SharePreUtil.saveData(mIView, "name", name);
+                        SharePreUtil.saveData(mIView, "accessToken", accessToken);
                         mIView.loginSuccess();
                     }
                 }
