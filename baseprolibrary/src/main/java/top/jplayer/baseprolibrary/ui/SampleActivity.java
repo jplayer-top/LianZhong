@@ -141,7 +141,7 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     public void setHBOne(SampleBean sampleBean) {
         SampleBean.DataBean.ListBean bean = sampleBean.data.list.get(0);
         if (bean.status != 4) {
-            tvNum.setText(bean.num);
+            tvNum.setText(bean.num + "");
             tvTime.setText(bean.sendTime);
             autoGrad(sampleBean.data);
         }
