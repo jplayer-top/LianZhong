@@ -51,6 +51,8 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     private MultipleStatusView multipleStatusView;
     private EditText etPhone;
     private EditText etPassword;
+    private TextView tvTime;
+    private TextView tvNum;
     private LinearLayout llNames;
     private CompositeDisposable disposable;
 
@@ -59,6 +61,8 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         mFlRootView.addView(View.inflate(this, R.layout.activity_sample, null));
         presenter = new SamplePresenter(this);
         refreshLayout = mFlRootView.findViewById(R.id.smartRefreshLayout);
+        tvTime = mFlRootView.findViewById(R.id.tvTime);
+        tvNum = mFlRootView.findViewById(R.id.tvNum);
         multipleStatusView = mFlRootView.findViewById(R.id.multiplestatusview);
         etPhone = mFlRootView.findViewById(R.id.etPhone);
         etPassword = mFlRootView.findViewById(R.id.etPassword);
@@ -129,13 +133,21 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         }
     }
 
+    public void setHBOne(SampleBean sampleBean) {
+        SampleBean.DataBean.ListBean bean = sampleBean.data.list.get(0);
+        if (bean.status != 4) {
+            tvNum.setText(bean.num);
+            tvTime.setText(bean.sendTime);
+        }
+        autoGrad(sampleBean.data);
+    }
+
     @Override
     public void setHBList(SampleBean sampleBean) {
         multipleStatusView.showContent();
         SampleBean.DataBean data = sampleBean.data;
         refreshLayout.finishRefresh();
         adapter.setNewData(data.list);
-
         autoGrad(data);
     }
 
@@ -202,4 +214,6 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         llNames.removeAllViews();
         getNames();
     }
+
+
 }

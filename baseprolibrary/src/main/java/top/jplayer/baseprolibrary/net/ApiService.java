@@ -20,6 +20,11 @@ public interface ApiService {
                                          @Query("_") String cur_,
                                          @Query("callback") String callback);
 
+    @GET("support/bdapi/sharporder/redhalling?")
+    Observable<SampleBean> getSampleHasBean(@Query("parameter") String parameter,
+                                         @Query("_") String cur_,
+                                         @Query("callback") String callback);
+
     @POST("app/user/login?")
     Observable<LoginBean> getLoginBean(@Query("phone") String phone,
                                        @Query("password") String password);

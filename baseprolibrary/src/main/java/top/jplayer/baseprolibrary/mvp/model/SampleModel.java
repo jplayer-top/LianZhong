@@ -32,6 +32,15 @@ public class SampleModel {
                 .compose(new IoMainSchedule<>());
     }
 
+    public Observable<SampleBean> requestHasHBList() {
+        String time = String.valueOf(new Date().getTime());
+        return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
+                .reCreate(ApiService.class)
+                .getSampleBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082107581886\",\"accessToken\":\"4cc4baaf8bf7a71773423b0ed6398aeb\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                        String.format(Locale.CHINA, "Zepto%s", time))
+                .compose(new IoMainSchedule<>());
+    }
+
     public Observable<GradBean> requestHBY(String userNo) {
         String time = String.valueOf(new Date().getTime());
         String parameter = String.format(Locale.CHINA, "{\"command\":\"submitJoinGames\",\"userNo\":\"%s\",\"money\":\"157\",\"channel\":\"1030020\",\"productName\":\"yccp\"}", userNo);
@@ -94,6 +103,7 @@ public class SampleModel {
                 .getLoginBean(parameter, time, String.format(Locale.CHINA, "jQuery111107794920853339136_%s", time))
                 .compose(new IoMainSchedule<>());
     }
+
 
 }
 

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import top.jplayer.baseprolibrary.mvp.contract.BasePresenter;
@@ -52,9 +53,31 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
         addSubscription(disposable);
     }
 
+    public void requestHasHBList() {
+        Disposable disposable = sampleModel.requestHasHBList()
+                .map(sampleBean -> {
+                    if (TextUtils.equals("0000", sampleBean.errorCode)) {
+                        if (sampleBean.data != null && sampleBean.data.list != null) {
+                            return sampleBean;
+                        } else return null;
+                    }
+                    return null;
+                })
+                .subscribe(sampleBean ->
+                {
+
+                    if (sampleBean.data.list.size() < 1) {
+                    } else {
+                        mIView.setHBOne(sampleBean);
+                    }
+                }, throwable -> {
+                });
+        addSubscription(disposable);
+    }
+
     @Override
     public void requestGrad(String id, String userNo, String accessToken) {
-        Disposable subscribe = sampleModel.requestGrad(id, userNo,accessToken).subscribe(gradBean ->
+        Disposable subscribe = sampleModel.requestGrad(id, userNo, accessToken).subscribe(gradBean ->
         {
             if (TextUtils.equals("0000", gradBean.errorCode)) {
                 requestGet(id, userNo, accessToken);
@@ -67,13 +90,13 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
 
     @Override
     public void requestGet(String id, String userNo, String accessToken) {
-        Disposable disposable = sampleModel.requestGet(id, userNo,accessToken).subscribe(gradBean -> {
+        Disposable disposable = sampleModel.requestGet(id, userNo, accessToken).subscribe(gradBean -> {
             if (TextUtils.equals("0000", gradBean.errorCode)) {
                 ToastUtils.init().showSuccessToast(mIView, "抢到了，关闭该界面吧");
             } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
-                requestGet(id, userNo,accessToken);
+                requestGet(id, userNo, accessToken);
             }
-        }, throwable -> requestGet(id, userNo,accessToken));
+        }, throwable -> requestGet(id, userNo, accessToken));
         addSubscription(disposable);
     }
 
