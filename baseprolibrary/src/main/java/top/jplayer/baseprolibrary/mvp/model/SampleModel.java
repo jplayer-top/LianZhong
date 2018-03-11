@@ -36,7 +36,7 @@ public class SampleModel {
         String time = String.valueOf(new Date().getTime());
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getSampleBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082107581886\",\"accessToken\":\"4cc4baaf8bf7a71773423b0ed6398aeb\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                .getSampleHasBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082407616512\",\"accessToken\":\"43b357a944985fb6c6e5ebe1ecd7305a\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"imei\":\"864341034978208\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
                         String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }

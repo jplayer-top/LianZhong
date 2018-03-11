@@ -69,6 +69,7 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         Button btnAdd = mFlRootView.findViewById(R.id.btnAdd);
         showLoading();
         presenter.requestHBList();
+        presenter.requestHasHBList();
         RecyclerView recyclerView = mFlRootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -92,7 +93,11 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         Disposable subscribe = Observable.interval(5, 5, TimeUnit.SECONDS)
                 .compose(new IoMainSchedule<>())
                 .subscribe(aLong -> presenter.requestHBList());
+        Disposable subscribe1 = Observable.interval(5, 5, TimeUnit.SECONDS)
+                .compose(new IoMainSchedule<>())
+                .subscribe(aLong -> presenter.requestHasHBList());
         disposable.add(subscribe);
+        disposable.add(subscribe1);
     }
 
     private void getNames() {
@@ -138,8 +143,8 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         if (bean.status != 4) {
             tvNum.setText(bean.num);
             tvTime.setText(bean.sendTime);
+            autoGrad(sampleBean.data);
         }
-        autoGrad(sampleBean.data);
     }
 
     @Override
