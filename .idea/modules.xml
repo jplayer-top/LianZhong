@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Lianzhong.iml" filepath="$PROJECT_DIR$/Lianzhong.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LianZhong.iml" filepath="$PROJECT_DIR$/LianZhong.iml" />
+      <module fileurl="file://C:\Users\newone\Desktop\LianZhong\Lianzhong.iml" filepath="C:\Users\newone\Desktop\LianZhong\Lianzhong.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\newone\Desktop\LianZhong\app\app.iml" filepath="C:\Users\newone\Desktop\LianZhong\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/baseprolibrary/baseprolibrary.iml" filepath="$PROJECT_DIR$/baseprolibrary/baseprolibrary.iml" />
+      <module fileurl="file://C:\Users\newone\Desktop\LianZhong\baseprolibrary\baseprolibrary.iml" filepath="C:\Users\newone\Desktop\LianZhong\baseprolibrary\baseprolibrary.iml" />
     </modules>
   </component>
 </project>

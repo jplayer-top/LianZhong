@@ -1,7 +1,5 @@
 package top.jplayer.baseprolibrary.mvp.model;
 
-import android.os.SystemClock;
-
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -15,7 +13,6 @@ import top.jplayer.baseprolibrary.net.ApiService;
 import top.jplayer.baseprolibrary.net.IoMainSchedule;
 import top.jplayer.baseprolibrary.net.JsonRefixInterceptor;
 import top.jplayer.baseprolibrary.net.RetrofitManager;
-import top.jplayer.baseprolibrary.utils.LogUtil;
 
 /**
  * Created by Obl on 2018/1/13.
@@ -36,7 +33,7 @@ public class SampleModel {
         String time = String.valueOf(new Date().getTime());
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getSampleHasBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082407616512\",\"accessToken\":\"43b357a944985fb6c6e5ebe1ecd7305a\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"imei\":\"864341034978208\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                .getSampleHasBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082107581885\",\"accessToken\":\"8234ff9c15498fef4829de58d5283acd\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"imei\":\"864341034978208\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
                         String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }
