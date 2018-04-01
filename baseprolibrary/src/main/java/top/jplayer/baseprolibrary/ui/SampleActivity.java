@@ -1,11 +1,9 @@
 package top.jplayer.baseprolibrary.ui;
 
-import android.graphics.Color;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +33,7 @@ import top.jplayer.baseprolibrary.net.IoMainSchedule;
 import top.jplayer.baseprolibrary.ui.adapter.SampleAdapter;
 import top.jplayer.baseprolibrary.utils.DateUtils;
 import top.jplayer.baseprolibrary.utils.LogUtil;
+import top.jplayer.baseprolibrary.utils.MoneyUtils;
 import top.jplayer.baseprolibrary.utils.SharePreUtil;
 import top.jplayer.baseprolibrary.widgets.MultipleStatusView;
 
@@ -55,6 +54,10 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     private TextView tvNum;
     private LinearLayout llNames;
     private CompositeDisposable disposable;
+    private String mNames;
+    private String mUserNos;
+    private String mAccessToken;
+    private List<String> mUserNosList;
 
     @Override
     public void initSuperData(FrameLayout mFlRootView) {
@@ -67,9 +70,16 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         etPhone = mFlRootView.findViewById(R.id.etPhone);
         etPassword = mFlRootView.findViewById(R.id.etPassword);
         Button btnAdd = mFlRootView.findViewById(R.id.btnAdd);
+        Button btnStart = mFlRootView.findViewById(R.id.btnStart);
+        Button btnOne = mFlRootView.findViewById(R.id.btnOne);
+        Button btnTotal = mFlRootView.findViewById(R.id.btnTotal);
         showLoading();
-        presenter.requestHBList();
-        presenter.requestHasHBList();
+        getNames();
+        btnStart.setOnClickListener(v -> {
+            requestSign();
+        });
+        presenter.requestHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]);
+        presenter.requestHasHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]);
         RecyclerView recyclerView = mFlRootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -83,33 +93,66 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
             getUserNo(listBean.id);
             return false;
         });
-        refreshLayout.setOnRefreshListener(refresh -> presenter.requestHBList());
+        refreshLayout.setOnRefreshListener(refresh -> presenter.requestHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]));
         btnAdd.setOnClickListener(view ->
                 presenter.addAccount(etPhone.getText().toString().trim(),
                         etPassword.getText().toString().trim()));
+        btnOne.setOnClickListener(view -> {
+            List<String> list = new ArrayList<>();
+            list.add("17667936541");
+            list.add("18366108542");
+            list.add("17085329627");
+            for (String s : list) {
+                presenter.addAccount(s,
+                        "lj011200");
+
+            }
+        });
         llNames = mFlRootView.findViewById(R.id.llShowName);
-        getNames();
         disposable = new CompositeDisposable();
         Disposable subscribe = Observable.interval(5, 5, TimeUnit.SECONDS)
                 .compose(new IoMainSchedule<>())
-                .subscribe(aLong -> presenter.requestHBList());
+                .subscribe(aLong -> presenter.requestHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]));
         Disposable subscribe1 = Observable.interval(5, 5, TimeUnit.SECONDS)
                 .compose(new IoMainSchedule<>())
-                .subscribe(aLong -> presenter.requestHasHBList());
+                .subscribe(aLong -> presenter.requestHasHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]));
         disposable.add(subscribe);
         disposable.add(subscribe1);
+        btnTotal.setOnClickListener(v -> {
+            requestTotalMoney();
+            getMoney(btnTotal);
+        });
+        getMoney(btnTotal);
+    }
+
+    private void getMoney(Button btnTotal) {
+        if (mUserNos != null) {
+            mUserNosList = Arrays.asList(mUserNos.split(","));
+            Observable.timer(10, TimeUnit.SECONDS)
+                    .compose(new IoMainSchedule<>()).subscribe(aLong -> {
+                if (mUserNosList != null) {
+                    int total = 0;
+                    for (String no : mUserNosList) {
+                        int money = (int) SharePreUtil.getData(this, no, 0);
+                        total += money;
+                    }
+                    String formatIntF = MoneyUtils.formatIntF(total);
+                    btnTotal.setText(String.format(Locale.CHINA, "共赚%s", formatIntF));
+                }
+            });
+        }
     }
 
     private void getNames() {
-        String names = (String) SharePreUtil.getData(this, "name", "");
-        String userNos = (String) SharePreUtil.getData(this, "userNo", "");
-        String accessToken = (String) SharePreUtil.getData(this, "accessToken", "");
-        LogUtil.e(names);
-        LogUtil.e(userNos);
-        LogUtil.e(accessToken);
-        if (!TextUtils.equals("", names)) {
-            assert names != null;
-            Observable.fromIterable(Arrays.asList(names.split(",")))
+        mNames = (String) SharePreUtil.getData(this, "name", "");
+        mUserNos = (String) SharePreUtil.getData(this, "userNo", "");
+        mAccessToken = (String) SharePreUtil.getData(this, "accessToken", "");
+        LogUtil.e(mNames);
+        LogUtil.e(mUserNos);
+        LogUtil.e(mAccessToken);
+        if (!TextUtils.equals("", mNames)) {
+            assert mNames != null;
+            Observable.fromIterable(Arrays.asList(mNames.split(",")))
                     .compose(new IoMainSchedule<>())
                     .subscribe(s -> {
                         TextView textView = new TextView(this);
@@ -134,6 +177,33 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
             List<String> accessTokensList = Arrays.asList(accessToken.split(","));
             for (int i = 0; i < userNosList.size(); i++) {
                 presenter.requestGrad(id, userNosList.get(i), accessTokensList.get(i));
+            }
+        }
+    }
+
+    private void requestTotalMoney() {
+        String userNos = (String) SharePreUtil.getData(this, "userNo", "");
+        if (!TextUtils.equals("", userNos)) {
+            assert userNos != null;
+            mUserNosList = Arrays.asList(userNos.split(","));
+            for (int i = 0; i < mUserNosList.size(); i++) {
+                presenter.requestTotalMoney(mUserNosList.get(i));
+            }
+        }
+    }
+
+    private void requestSign() {
+        String userNos = (String) SharePreUtil.getData(this, "userNo", "");
+        String accessToken = (String) SharePreUtil.getData(this, "accessToken", "");
+        LogUtil.e(userNos);
+        LogUtil.e(accessToken);
+        if (!TextUtils.equals("", userNos)) {
+            assert userNos != null;
+            assert accessToken != null;
+            List<String> userNosList = Arrays.asList(userNos.split(","));
+            List<String> accessTokensList = Arrays.asList(accessToken.split(","));
+            for (int i = 0; i < userNosList.size(); i++) {
+                presenter.requestSign(userNosList.get(i), accessTokensList.get(i));
             }
         }
     }

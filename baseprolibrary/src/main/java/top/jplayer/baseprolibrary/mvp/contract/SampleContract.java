@@ -13,7 +13,7 @@ public interface SampleContract {
     }
 
     interface ISamplePresenter extends IContract.IPresenter {
-        void requestHBList();
+        void requestHBList(String no,String token);
 
         void requestGrad(String id, String userNo,String accessToken);
 

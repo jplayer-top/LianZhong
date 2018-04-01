@@ -6,6 +6,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import top.jplayer.baseprolibrary.mvp.model.bean.GradBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.LoginBean;
+import top.jplayer.baseprolibrary.mvp.model.bean.MoneyBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.SampleBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.WZBean;
 
@@ -22,8 +23,8 @@ public interface ApiService {
 
     @GET("support/bdapi/sharporder/redhalling?")
     Observable<SampleBean> getSampleHasBean(@Query("parameter") String parameter,
-                                         @Query("_") String cur_,
-                                         @Query("callback") String callback);
+                                            @Query("_") String cur_,
+                                            @Query("callback") String callback);
 
     @POST("app/user/login?")
     Observable<LoginBean> getLoginBean(@Query("phone") String phone,
@@ -48,4 +49,9 @@ public interface ApiService {
     @GET("support/bdapi/activity/hongbao/queryTheme?")
     Observable<WZBean> getStrBean(@Query("parameter") String parameter, @Query("_") String time, @Query("callback") String format);
 
+    @GET("qmch/generalRequest?")
+    Observable<GradBean> getSignBean(@Query("parameter") String parameter, @Query("_") String time, @Query("callBackMethod") String format);
+
+    @GET("support/bdapi/sharporder/myred?")
+    Observable<MoneyBean> getMoneyBean(@Query("parameter") String parameter, @Query("_") String time, @Query("callback") String format);
 }

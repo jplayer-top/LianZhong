@@ -95,7 +95,6 @@ public class RetrofitManager {
             }
         };
     }
-
     /**
      * 设置公共参数
      */

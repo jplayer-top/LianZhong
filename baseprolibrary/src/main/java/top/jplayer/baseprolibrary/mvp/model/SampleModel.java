@@ -7,6 +7,7 @@ import java.util.Random;
 import io.reactivex.Observable;
 import top.jplayer.baseprolibrary.mvp.model.bean.GradBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.LoginBean;
+import top.jplayer.baseprolibrary.mvp.model.bean.MoneyBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.SampleBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.WZBean;
 import top.jplayer.baseprolibrary.net.ApiService;
@@ -20,20 +21,25 @@ import top.jplayer.baseprolibrary.net.RetrofitManager;
  */
 
 public class SampleModel {
-    public Observable<SampleBean> requestHBList() {
+    public Observable<SampleBean> requestHBList(String no, String token) {
         String time = String.valueOf(new Date().getTime());
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getSampleBean("{\"information\":\"bd_web_api\",\"command\":\"redhallwill\",\"userno\":\"2017082107581886\",\"accessToken\":\"4cc4baaf8bf7a71773423b0ed6398aeb\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                .getSampleBean(String.format(Locale.CHINA, "{\"information\":\"bd_web_api\",\"command\":\"redhallwill\",\"userno\":\"%s\"," +
+                                "\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\"," +
+                                "\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", no, token), time,
                         String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }
 
-    public Observable<SampleBean> requestHasHBList() {
+    public Observable<SampleBean> requestHasHBList(String no, String token) {
         String time = String.valueOf(new Date().getTime());
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getSampleHasBean("{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"2017082107581885\",\"accessToken\":\"8234ff9c15498fef4829de58d5283acd\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"imei\":\"864341034978208\",\"platform\":\"html\",\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", time,
+                .getSampleHasBean(String.format(Locale.CHINA, "{\"information\":\"bd_web_api\",\"command\":\"redhalling\",\"userno\":\"%s\"," +
+                                "\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\"," +
+                                "\"imei\":\"864341034978208\",\"platform\":\"html\",\"version\":\"5.2.40\"," +
+                                "\"productName\":\"lzcp\"}", no, token), time,
                         String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }
@@ -102,5 +108,27 @@ public class SampleModel {
     }
 
 
+    public Observable<GradBean> requestSign(String no, String token) {
+        String time = String.valueOf(new Date().getTime());
+        String parameter = String.format(Locale.CHINA,
+                "{\"command\":\"gold\",\"requestType\":\"signToGold\",\"userNo\":\"%s\"," +
+                        "\"accessToken\":\"%s\"}", no, token);
+        return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
+                .reCreate(ApiService.class)
+                .getSignBean(parameter, time, String.format(Locale.CHINA, "jQuery111102673366607632488_%s", time))
+                .compose(new IoMainSchedule<>());
+    }
+
+    public Observable<MoneyBean> requestTotalMoney(String no) {
+        String time = String.valueOf(new Date().getTime());
+        String parameter = String.format(Locale.CHINA,
+                "{\"information\":\"bd_web_api\",\"command\":\"myred\",\"userno\":\"%s\",\"start\":0," +
+                        "\"size\":50,\"token\":\"dasda-asda\",\"platform\":\"html\"," +
+                        "\"version\":\"5.2.40\",\"productName\":\"lzcp\"}", no);
+        return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
+                .reCreate(ApiService.class)
+                .getMoneyBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))
+                .compose(new IoMainSchedule<>());
+    }
 }
 

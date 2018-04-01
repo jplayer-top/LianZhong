@@ -4,14 +4,11 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
-import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import top.jplayer.baseprolibrary.mvp.contract.BasePresenter;
 import top.jplayer.baseprolibrary.mvp.contract.SampleContract;
 import top.jplayer.baseprolibrary.mvp.model.SampleModel;
 import top.jplayer.baseprolibrary.mvp.model.bean.LoginBean;
-import top.jplayer.baseprolibrary.mvp.model.bean.SampleBean;
 import top.jplayer.baseprolibrary.ui.SampleActivity;
 import top.jplayer.baseprolibrary.utils.SharePreUtil;
 import top.jplayer.baseprolibrary.utils.ToastUtils;
@@ -29,9 +26,23 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
         sampleModel = new SampleModel();
     }
 
+    public void requestSign(String no, String token) {
+        sampleModel.requestSign(no, token).subscribe(gradBean -> {
+            if (TextUtils.equals("0000", gradBean.errorCode)) {
+                ToastUtils.init().showSuccessToast(mIView, "抢到了，关闭该界面吧");
+            } else if (TextUtils.equals("9999", gradBean.errorCode)) {
+                ToastUtils.init().showSuccessToast(mIView, "已签到");
+            } else if (TextUtils.equals("1005", gradBean.errorCode)) {
+                ToastUtils.init().showSuccessToast(mIView, "登录失效,请重新登录");
+            } else {
+                ToastUtils.init().showSuccessToast(mIView, "先看看是否已签到" + gradBean.errorCode);
+            }
+        });
+    }
+
     @Override
-    public void requestHBList() {
-        Disposable disposable = sampleModel.requestHBList()
+    public void requestHBList(String no, String token) {
+        Disposable disposable = sampleModel.requestHBList(no, token)
                 .map(sampleBean -> {
                     if (TextUtils.equals("0000", sampleBean.errorCode)) {
                         if (sampleBean.data != null && sampleBean.data.list != null) {
@@ -53,8 +64,8 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
         addSubscription(disposable);
     }
 
-    public void requestHasHBList() {
-        Disposable disposable = sampleModel.requestHasHBList()
+    public void requestHasHBList(String no, String token) {
+        Disposable disposable = sampleModel.requestHasHBList(no, token)
                 .map(sampleBean -> {
                     if (TextUtils.equals("0000", sampleBean.errorCode)) {
                         if (sampleBean.data != null && sampleBean.data.list != null) {
@@ -131,6 +142,17 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
                     }
                 }
                 , throwable -> ToastUtils.init().showErrorToast(mIView, "登陆失败"));
+        addSubscription(disposable);
+    }
+
+
+    public void requestTotalMoney(String no) {
+        Disposable disposable = sampleModel.requestTotalMoney(no).subscribe(gradBean -> {
+            if (TextUtils.equals("0000", gradBean.errorCode)) {
+                SharePreUtil.saveData(mIView, no, gradBean.data.totalMoney);
+            }
+        }, throwable -> {
+        });
         addSubscription(disposable);
     }
 }
