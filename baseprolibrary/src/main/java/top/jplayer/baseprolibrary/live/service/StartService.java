@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import top.jplayer.baseprolibrary.utils.LogUtil;
 import top.jplayer.baseprolibrary.utils.SharePreUtil;
 
 import static com.chad.library.adapter.base.listener.SimpleClickListener.TAG;
@@ -37,7 +38,9 @@ public class StartService extends Service {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int saveDay = (int) SharePreUtil.getData(this, "day", 0);
-            if (hour >= 9 && saveDay == day) {
+            LogUtil.e(day);
+            LogUtil.e(saveDay);
+            if (hour >= 9 && saveDay != day) {
                 startService(new Intent(this, WhiteService.class));
                 stopSelf();
             }

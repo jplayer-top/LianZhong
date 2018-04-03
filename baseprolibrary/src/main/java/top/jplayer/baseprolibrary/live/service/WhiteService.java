@@ -77,6 +77,7 @@ public class WhiteService extends Service {
                             Observable.timer(10, TimeUnit.SECONDS).subscribe(aLong1 -> {
                                 Calendar calendar = Calendar.getInstance();
                                 int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                LogUtil.e(day);
                                 SharePreUtil.saveData(this, "day", day);
                                 startService(new Intent(this, StartService.class));
                                 stopSelf();
