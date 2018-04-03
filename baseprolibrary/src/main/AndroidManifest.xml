@@ -7,11 +7,55 @@
             android:name=".ui.SampleActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="top.jplayer.lianzhong.main.live"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.ContactActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
         </activity>
+        <!-- start -->
+        <receiver
+            android:name=".live.receiver.WakeReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="top.jplayer.baseprolibrary"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".live.service.WhiteService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":white"/>
+        <service
+            android:name=".live.service.GrayService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":gray"/>
+        <service
+            android:name=".live.service.GrayService$GrayInnerService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":gray"/>
+        <service
+            android:name=".live.service.BackgroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":bg"/>
+        <service
+            android:name=".live.receiver.WakeReceiver$WakeNotifyService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <service
+            android:name=".live.receiver.WakeReceiver$WakeGrayInnerService"
+            android:enabled="true"
+            android:exported="false"/>
+        <!-- end -->
     </application>
 </manifest>

@@ -1,9 +1,10 @@
 package top.jplayer.lianzhong;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
+import top.jplayer.baseprolibrary.live.service.WhiteService;
 import top.jplayer.baseprolibrary.ui.SampleActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
         );
         findViewById(R.id.btn2).setOnClickListener(view ->
                 startActivity(new Intent(this, ThreeActivity.class))
+        );
+        findViewById(R.id.btn3).setOnClickListener(view ->
+                startService(new Intent(getApplicationContext(), WhiteService.class))
         );
     }
 }
