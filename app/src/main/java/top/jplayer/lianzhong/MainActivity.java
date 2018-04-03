@@ -25,5 +25,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn3).setOnClickListener(view ->
                 startService(new Intent(getApplicationContext(), WhiteService.class))
         );
+        findViewById(R.id.btn4).setOnClickListener(view ->
+                stopService(new Intent(getApplicationContext(), WhiteService.class))
+        );
     }
 }
