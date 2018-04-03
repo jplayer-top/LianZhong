@@ -57,39 +57,35 @@ public class WhiteService extends Service {
         mNosList = mUserNos.split(",");
         mTokenList = mAccessToken.split(",");
         mDisposable1 = Observable.interval(5, TimeUnit.SECONDS).compose(new IoMainSchedule<>()).subscribe(aLong -> {
-            long l = aLong + 1;
-            btn_no_common(3, String.format(Locale.CHINA,
-                    "已经努力的抢了%s次了", String.valueOf(l)));
-            mModel.requestHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
-                    .map(sampleBean -> {
-                        if (TextUtils.equals("0000", sampleBean.errorCode)) {
-                            if (sampleBean.data != null && sampleBean.data.list != null) {
-                                return sampleBean;
-                            } else return null;
-                        }
-                        return null;
-                    })
-                    .subscribe(sampleBean -> {
-                        if (sampleBean.data.isTwo.hadNum >= 2) {
-                            //已经两次了
-                            btn_no_common(1, "抢红包次数达到最大，明天继续");
-                            mDisposable1.dispose();
-                            Observable.timer(10, TimeUnit.SECONDS).subscribe(aLong1 -> {
-                                Calendar calendar = Calendar.getInstance();
-                                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                                LogUtil.e(day);
-                                SharePreUtil.saveData(this, "day", day);
-                                startService(new Intent(this, StartService.class));
-                                stopSelf();
-                            });
-                        } else {
-                            if (sampleBean.data.list.size() > 0) {
-                                autoGrad(sampleBean.data);
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if (hour >= 10) {
+                long l = aLong + 1;
+                btn_no_common(3, String.format(Locale.CHINA,
+                        "已经努力的抢了%s次了", String.valueOf(l)));
+                mModel.requestHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
+                        .map(sampleBean -> {
+                            if (TextUtils.equals("0000", sampleBean.errorCode)) {
+                                if (sampleBean.data != null && sampleBean.data.list != null) {
+                                    return sampleBean;
+                                } else return null;
                             }
-                        }
-                    }, throwable -> {
+                            return null;
+                        })
+                        .subscribe(sampleBean -> {
+                            if (sampleBean.data.isTwo.hadNum >= 2) {
+                                //已经两次了
+                                btn_no_common(1, "抢红包次数达到最大，明天继续");
+                            } else {
+                                if (sampleBean.data.list.size() > 0) {
+                                    autoGrad(sampleBean.data);
+                                }
+                            }
+                        }, throwable -> {
 
-                    });
+                        });
+            }
+
         });
 
         mDisposable2 = Observable.interval(5, TimeUnit.SECONDS).compose(new IoMainSchedule<>()).subscribe(aLong -> {
