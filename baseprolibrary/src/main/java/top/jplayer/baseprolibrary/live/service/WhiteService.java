@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -73,7 +74,13 @@ public class WhiteService extends Service {
                             //已经两次了
                             btn_no_common(1, "抢红包次数达到最大，明天继续");
                             mDisposable1.dispose();
-                            Observable.timer(10, TimeUnit.SECONDS).subscribe(aLong1 -> stopSelf());
+                            Observable.timer(10, TimeUnit.SECONDS).subscribe(aLong1 -> {
+                                Calendar calendar = Calendar.getInstance();
+                                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                SharePreUtil.saveData(this, "day", day);
+                                startService(new Intent(this, StartService.class));
+                                stopSelf();
+                            });
                         } else {
                             if (sampleBean.data.list.size() > 0) {
                                 autoGrad(sampleBean.data);

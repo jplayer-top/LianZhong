@@ -9,7 +9,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="top.jplayer.lianzhong.main.live"/>
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
@@ -32,6 +32,11 @@
             android:enabled="true"
             android:exported="false"
             android:process=":white"/>
+        <service
+            android:name=".live.service.StartService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":start"/>
         <service
             android:name=".live.service.GrayService"
             android:enabled="true"

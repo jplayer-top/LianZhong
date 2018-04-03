@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import top.jplayer.baseprolibrary.live.service.StartService;
 import top.jplayer.baseprolibrary.live.service.WhiteService;
 import top.jplayer.baseprolibrary.ui.SampleActivity;
 
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         );
         findViewById(R.id.btn4).setOnClickListener(view ->
                 stopService(new Intent(getApplicationContext(), WhiteService.class))
+        );
+        findViewById(R.id.btn5).setOnClickListener(view ->
+                startService(new Intent(getApplicationContext(), StartService.class))
         );
     }
 }
