@@ -73,6 +73,7 @@ public class WhiteService extends Service {
                             //已经两次了
                             btn_no_common(1, "抢红包次数达到最大，明天继续");
                             mDisposable1.dispose();
+                            Observable.timer(10, TimeUnit.SECONDS).subscribe(aLong1 -> stopSelf());
                         } else {
                             if (sampleBean.data.list.size() > 0) {
                                 autoGrad(sampleBean.data);
