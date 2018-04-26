@@ -96,25 +96,30 @@ public class WhiteService extends Service {
         mDisposable2 = Flowable.interval(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
-                    mModel.requestHasHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
-                            .map(sampleBean -> {
-                                if (TextUtils.equals("0000", sampleBean.errorCode)) {
-                                    if (sampleBean.data != null && sampleBean.data.list != null) {
-                                        return sampleBean;
-                                    } else return null;
-                                }
-                                return null;
-                            })
-                            .subscribe(sampleBean -> {
-                                List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
-                                if (beans.size() > 0) {
-                                    if (beans.get(0).status != 4) {
-                                        autoGrad(sampleBean.data);
+                    Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    if ((hour >= 10 && hour <= 12) || hour >= 19 && hour <= 23) {
+                        mModel.requestHasHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
+                                .map(sampleBean -> {
+                                    if (TextUtils.equals("0000", sampleBean.errorCode)) {
+                                        if (sampleBean.data != null && sampleBean.data.list != null) {
+                                            return sampleBean;
+                                        } else return null;
                                     }
-                                }
-                            }, throwable -> {
+                                    return null;
+                                })
+                                .subscribe(sampleBean -> {
+                                    List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
+                                    if (beans.size() > 0) {
+                                        if (beans.get(0).status != 4) {
+                                            autoGrad(sampleBean.data);
+                                        }
+                                    }
+                                }, throwable -> {
 
-                            });
+                                });
+
+                    }
                 });
         super.onCreate();
         compositeDisposable.add(mDisposable1);
