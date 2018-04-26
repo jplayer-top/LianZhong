@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import top.jplayer.baseprolibrary.mvp.model.bean.GradBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.LoginBean;
 import top.jplayer.baseprolibrary.mvp.model.bean.MoneyBean;
@@ -53,13 +56,14 @@ public class SampleModel {
                 .compose(new IoMainSchedule<>());
     }
 
-    public Observable<GradBean> requestGrad(String id, String userNo, String accessToken) {
+    public Flowable<GradBean> requestGrad(String id, String userNo, String accessToken) {
         String time = String.valueOf(new Date().getTime());
         String parameter = String.format(Locale.CHINA, "{\"information\":\"bd_web_api\",\"command\":\"grab\",\"userno\":\"%s\",\"id\":\"%s\",\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"platform\":\"html\",\"version\":\"5.2.36\",\"productName\":\"lzcp\"}", userNo, id, accessToken);
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
                 .getGradBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))
-                .compose(new IoMainSchedule<>());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<GradBean> requestWZ(String str, String userNo) {
@@ -84,14 +88,15 @@ public class SampleModel {
                 .compose(new IoMainSchedule<>());
     }
 
-    public Observable<GradBean> requestGet(String id, String userNo, String accessToken) {
+    public Flowable<GradBean> requestGet(String id, String userNo, String accessToken) {
         String time = String.valueOf(new Date().getTime());
         String parameter = String.format(Locale.CHINA,
                 "{\"information\":\"bd_web_api\",\"command\":\"reddetail\",\"userno\":\"%s\",\"id\":\"%s\",\"accessToken\":\"%s\",\"token\":\"Ar3H8JuWQAULEgJhTr3tfjWCa-CNNQkKGVUroCy5JpKJ\",\"start\":0,\"size\":50,\"platform\":\"html\",\"version\":\"5.2.30\",\"productName\":\"lzcp\"}", userNo, id, accessToken);
         return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
                 .getGradBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))
-                .compose(new IoMainSchedule<>());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<LoginBean> login(String phone, String password) {

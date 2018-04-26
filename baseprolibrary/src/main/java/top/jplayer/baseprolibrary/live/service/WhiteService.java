@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import top.jplayer.baseprolibrary.R;
 import top.jplayer.baseprolibrary.mvp.model.SampleModel;
 import top.jplayer.baseprolibrary.mvp.model.bean.SampleBean;
@@ -56,61 +58,64 @@ public class WhiteService extends Service {
         mAccessToken = (String) SharePreUtil.getData(this, "accessToken", "");
         mNosList = mUserNos.split(",");
         mTokenList = mAccessToken.split(",");
-        mDisposable1 = Observable.interval(5, TimeUnit.SECONDS).compose(new IoMainSchedule<>()).subscribe(aLong -> {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            if (hour >= 10) {
-                long l = aLong + 1;
-                btn_no_common(3, String.format(Locale.CHINA,
-                        "已经努力的抢了%s次了", String.valueOf(l)));
-                mModel.requestHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
-                        .map(sampleBean -> {
-                            if (TextUtils.equals("0000", sampleBean.errorCode)) {
-                                if (sampleBean.data != null && sampleBean.data.list != null) {
-                                    return sampleBean;
-                                } else return null;
-                            }
-                            return null;
-                        })
-                        .subscribe(sampleBean -> {
-                            if (sampleBean.data.isTwo.hadNum >= 2) {
-                                //已经两次了
-                                btn_no_common(1, "抢红包次数达到最大，明天继续");
-                            } else {
-                                if (sampleBean.data.list.size() > 0) {
-                                    autoGrad(sampleBean.data);
+        mDisposable1 = Flowable.interval(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    if ((hour >= 10 && hour <= 12) || hour >= 19 && hour <= 23) {
+                        long l = aLong + 1;
+                        btn_no_common(3, String.format(Locale.CHINA,
+                                "已经努力的抢了%s次了", String.valueOf(l)));
+                        mModel.requestHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
+                                .map(sampleBean -> {
+                                    if (TextUtils.equals("0000", sampleBean.errorCode)) {
+                                        if (sampleBean.data != null && sampleBean.data.list != null) {
+                                            return sampleBean;
+                                        } else return null;
+                                    }
+                                    return null;
+                                })
+                                .subscribe(sampleBean -> {
+                                    if (sampleBean.data.isTwo.hadNum >= 2) {
+                                        //已经两次了
+                                        btn_no_common(1, "抢红包次数达到最大，明天继续");
+                                    } else {
+                                        if (sampleBean.data.list.size() > 0) {
+                                            autoGrad(sampleBean.data);
+                                        }
+                                    }
+                                }, throwable -> {
+
+                                });
+                    }
+
+                });
+
+        mDisposable2 = Flowable.interval(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    mModel.requestHasHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
+                            .map(sampleBean -> {
+                                if (TextUtils.equals("0000", sampleBean.errorCode)) {
+                                    if (sampleBean.data != null && sampleBean.data.list != null) {
+                                        return sampleBean;
+                                    } else return null;
                                 }
-                            }
-                        }, throwable -> {
-
-                        });
-            }
-
-        });
-
-        mDisposable2 = Observable.interval(5, TimeUnit.SECONDS).compose(new IoMainSchedule<>()).subscribe(aLong -> {
-            if (!mDisposable1.isDisposed()) {
-                mModel.requestHasHBList(mNosList[0], mTokenList[0]).compose(new IoMainSchedule<>())
-                        .map(sampleBean -> {
-                            if (TextUtils.equals("0000", sampleBean.errorCode)) {
-                                if (sampleBean.data != null && sampleBean.data.list != null) {
-                                    return sampleBean;
-                                } else return null;
-                            }
-                            return null;
-                        })
-                        .subscribe(sampleBean -> {
-                            List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
-                            if (beans.size() > 0) {
-                                if (beans.get(0).status != 4) {
-                                    autoGrad(sampleBean.data);
+                                return null;
+                            })
+                            .subscribe(sampleBean -> {
+                                List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
+                                if (beans.size() > 0) {
+                                    if (beans.get(0).status != 4) {
+                                        autoGrad(sampleBean.data);
+                                    }
                                 }
-                            }
-                        }, throwable -> {
+                            }, throwable -> {
 
-                        });
-            }
-        });
+                            });
+                });
         super.onCreate();
         compositeDisposable.add(mDisposable1);
         compositeDisposable.add(mDisposable2);
@@ -166,15 +171,12 @@ public class WhiteService extends Service {
      * @param data
      */
     private void autoGrad(SampleBean.DataBean data) {
-        if (!compositeDisposable.isDisposed()) {
-            compositeDisposable.clear();
-        }
         String sendTime = data.list.get(0).sendTime;
         long stamp = DateUtils.dateToStamp(sendTime);
         long time = new Date().getTime();
         long delay = (stamp - time) - 7000;
         String id = data.list.get(0).id;
-        Disposable disposable = Observable.timer(delay, TimeUnit.MILLISECONDS)
+        Disposable disposable = Flowable.timer(delay, TimeUnit.MILLISECONDS)
                 .subscribe(aLong -> getUserNo(id));
         compositeDisposable.add(disposable);
     }
@@ -201,7 +203,8 @@ public class WhiteService extends Service {
 
     private void requestGrad(String id, String userNo, String token) {
         mModel.requestGrad(id, userNo, token)
-                .compose(new IoMainSchedule<>())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(gradBean -> {
                     if (TextUtils.equals("0000", gradBean.errorCode)) {
                         requestGet(id, userNo, token);

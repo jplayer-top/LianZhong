@@ -1,5 +1,6 @@
 package top.jplayer.baseprolibrary.net;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -31,9 +32,9 @@ public interface ApiService {
                                        @Query("password") String password);
 
     @GET("support/bdapi/sharporder/grab?")
-    Observable<GradBean> getGradBean(@Query("parameter") String parameter,
-                                     @Query("_") String cur_,
-                                     @Query("callback") String callback);
+    Flowable<GradBean> getGradBean(@Query("parameter") String parameter,
+                                   @Query("_") String cur_,
+                                   @Query("callback") String callback);
 
     @GET("qmch/generalRequest?")
     Observable<LoginBean> getLoginBean(@Query("parameter") String parameter,
