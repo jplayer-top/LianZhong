@@ -215,6 +215,8 @@ public class WhiteService extends Service {
                         requestGet(id, userNo, token);
                     } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
                         requestGrad(id, userNo, token);
+                    } else if (!TextUtils.equals("0001", gradBean.errorCode)) {
+                        btn_no_common(4, "服务器错误");
                     }
                 });
     }
@@ -225,6 +227,8 @@ public class WhiteService extends Service {
                 btn_no_common(2, "红包已入账，恭喜恭喜");
             } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
                 requestGet(id, userNo, accessToken);
+            }else if (!TextUtils.equals("0001", gradBean.errorCode)) {
+                btn_no_common(4, "服务器错误");
             }
         }, throwable -> requestGet(id, userNo, accessToken));
     }
