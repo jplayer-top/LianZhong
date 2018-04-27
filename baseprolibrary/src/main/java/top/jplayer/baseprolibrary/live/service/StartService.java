@@ -13,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import top.jplayer.baseprolibrary.utils.LogUtil;
-import top.jplayer.baseprolibrary.utils.SharePreUtil;
 
 import static com.chad.library.adapter.base.listener.SimpleClickListener.TAG;
 
@@ -35,12 +33,8 @@ public class StartService extends Service {
         Log.i(TAG, "WhiteService->onCreate");
         mSubscribe = Observable.interval(10, TimeUnit.SECONDS).subscribe(aLong -> {
             Calendar calendar = Calendar.getInstance();
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int saveDay = (int) SharePreUtil.getData(this, "day", 0);
-            LogUtil.e(day);
-            LogUtil.e(saveDay);
-            if (hour >= 9 && saveDay != day) {
+            if ((hour >= 9 && hour <= 12) || hour >= 19 && hour <= 23) {
                 startService(new Intent(this, WhiteService.class));
                 stopSelf();
             }
@@ -51,12 +45,10 @@ public class StartService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "WhiteService->onStartCommand");
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(top.jplayer.baseprolibrary.R.drawable.icon_set);
-        builder.setContentTitle("时间监听");
-        builder.setContentText("正在监听当前时间...");
+        builder.setContentTitle("崩溃监听");
+        builder.setContentText("正在监听当前Server...");
         builder.setWhen(System.currentTimeMillis());
         Intent activityIntent = new Intent("top.jplayer.lianzhong.main.live");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
