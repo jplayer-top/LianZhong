@@ -135,5 +135,12 @@ public class SampleModel {
                 .getMoneyBean(parameter, time, String.format(Locale.CHINA, "Zepto%s", time))
                 .compose(new IoMainSchedule<>());
     }
+
+    public Observable<MoneyBean> requestStrTest() {
+        return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
+                .reCreate(ApiService.class)
+                .getTestBean()
+                .compose(new IoMainSchedule<>());
+    }
 }
 

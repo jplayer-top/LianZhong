@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import io.reactivex.Observable;
 import top.jplayer.baseprolibrary.mvp.model.SampleModel;
 import top.jplayer.baseprolibrary.ui.SuperBaseActivity;
+import top.jplayer.baseprolibrary.utils.LogUtil;
 import top.jplayer.baseprolibrary.utils.ToastUtils;
 
 /**
@@ -21,13 +22,16 @@ public class ThreeActivity extends SuperBaseActivity {
         View view = mFlRootView.findViewById(R.id.btnHBY);
         SampleModel model = new SampleModel();
         String[] strs = {"2017082407616512", "2017091307758112", "2017082107581885"};
-        view.setOnClickListener(btn ->
-                model.requestStr().subscribe(strBean ->
-                        Observable.fromArray(strs).subscribe(s -> model.requestWZ(strBean.data.token, s).subscribe(gradBean ->
-                        {
-                            if (TextUtils.equals("0000", gradBean.errorCode)) {
-                                ToastUtils.init().showSuccessToast(this, "抢到了，关闭该界面吧");
-                            }
-                        }))));
+        view.setOnClickListener(btn -> {
+
+            model.requestStr().subscribe(strBean ->
+                    Observable.fromArray(strs).subscribe(s -> model.requestWZ(strBean.data.token, s).subscribe(gradBean ->
+                    {
+                        if (TextUtils.equals("0000", gradBean.errorCode)) {
+                            ToastUtils.init().showSuccessToast(this, "抢到了，关闭该界面吧");
+                        }
+                    })), throwable -> {
+            },() -> {});
+        });
     }
 }

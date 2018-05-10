@@ -55,4 +55,7 @@ public interface ApiService {
 
     @GET("support/bdapi/sharporder/myred?")
     Observable<MoneyBean> getMoneyBean(@Query("parameter") String parameter, @Query("_") String time, @Query("callback") String format);
+
+    @GET("support/bdapi/sharporder/redhalling?parameter={%22information%22:%22bd_web_api%22,%22command%22:%22redhalling%22,%22userno%22:%222017082107579931%22,%22accessToken%22:%22f99b978a99b3c6e144ada6b2c9a27934%22,%22token%22:%22%22,%22imei%22:%22DC974AEA-50C8-4423-B1FE-4B0EB0C62D1E%22,%22platform%22:%22html%22,%22version%22:%224.4.25%22,%22productName%22:%22ltcp22%22}&_=1525939181745&callback=Zepto1525939171239")
+    Observable<MoneyBean> getTestBean();
 }
