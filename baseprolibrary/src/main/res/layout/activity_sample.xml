@@ -133,7 +133,8 @@
             android:layout_height="50dp"
             android:layout_margin="@dimen/dp_10"
             android:background="@drawable/selector_grey_muti_press"
-            android:text="一键登录"/>
+            android:text="一键登录"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btnTotal"
@@ -142,6 +143,15 @@
             android:layout_margin="@dimen/dp_10"
             android:background="@drawable/selector_grey_muti_press"
             android:text="共赚0元"/>
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btnLog"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/selector_grey_muti_press"
+            android:text="日志查看"/>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

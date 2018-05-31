@@ -73,6 +73,7 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         Button btnStart = mFlRootView.findViewById(R.id.btnStart);
         Button btnOne = mFlRootView.findViewById(R.id.btnOne);
         Button btnTotal = mFlRootView.findViewById(R.id.btnTotal);
+        Button btnLog = mFlRootView.findViewById(R.id.btnLog);
         showLoading();
         getNames();
         btnStart.setOnClickListener(v -> {
@@ -123,7 +124,14 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
             getMoney(btnTotal);
         });
         getMoney(btnTotal);
+
+
+
+
+
     }
+
+    private boolean isOpenLog = false;
 
     private void getMoney(Button btnTotal) {
         if (mUserNos != null) {

@@ -87,7 +87,7 @@ public class WhiteService extends Service {
                                         }
                                     }
                                 }, throwable -> {
-
+                                    btn_no_common(5, "NetWorkError");
                                 });
                     }
 
@@ -112,11 +112,14 @@ public class WhiteService extends Service {
                                     List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
                                     if (beans.size() > 0) {
                                         if (beans.get(0).status != 4) {
+                                            if (beans.get(0).type==1) {
+                                                btn_no_common(8, "已开榜");
+                                            }
                                             autoGrad(sampleBean.data);
                                         }
                                     }
                                 }, throwable -> {
-
+                                    btn_no_common(5, "NetWorkError");
                                 });
 
                     }
@@ -221,6 +224,7 @@ public class WhiteService extends Service {
                         btn_no_common(4, "服务器错误");
                     }
                 }, throwable -> {
+                    btn_no_common(7, "致命错误");
                     startService(new Intent(this, StartService.class));
                     stopSelf();
                 });
@@ -235,7 +239,10 @@ public class WhiteService extends Service {
             } else if (!TextUtils.equals("0001", gradBean.errorCode)) {
                 btn_no_common(4, "服务器错误");
             }
-        }, throwable -> requestGet(id, userNo, accessToken));
+        }, throwable -> {
+            btn_no_common(6, "抢红包人太多，循环进行中");
+            requestGet(id, userNo, accessToken);
+        });
     }
 
 }
