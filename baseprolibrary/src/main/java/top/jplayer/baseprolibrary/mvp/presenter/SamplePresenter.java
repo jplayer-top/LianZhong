@@ -104,6 +104,7 @@ public class SamplePresenter extends BasePresenter<SampleActivity> implements Sa
         Disposable disposable = sampleModel.requestGet(id, userNo, accessToken).subscribe(gradBean -> {
             if (TextUtils.equals("0000", gradBean.errorCode)) {
                 ToastUtils.init().showSuccessToast(mIView, "抢到了，关闭该界面吧");
+                mIView.getOk();
             } else if (!TextUtils.equals("0009", gradBean.errorCode)) {
                 requestGet(id, userNo, accessToken);
             }

@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 import io.reactivex.Observable;
 import top.jplayer.baseprolibrary.mvp.model.SampleModel;
 import top.jplayer.baseprolibrary.ui.SuperBaseActivity;
-import top.jplayer.baseprolibrary.utils.LogUtil;
 import top.jplayer.baseprolibrary.utils.ToastUtils;
 
 /**
@@ -22,16 +21,21 @@ public class ThreeActivity extends SuperBaseActivity {
         View view = mFlRootView.findViewById(R.id.btnHBY);
         SampleModel model = new SampleModel();
         String[] strs = {"2017082407616512", "2017091307758112", "2017082107581885"};
-        view.setOnClickListener(btn -> {
+        view.setOnClickListener(btn -> model.requestStr().filter(wzBean -> {
+            if ("0000".equals(wzBean.errorCode)) {
 
-            model.requestStr().subscribe(strBean ->
-                    Observable.fromArray(strs).subscribe(s -> model.requestWZ(strBean.data.token, s).subscribe(gradBean ->
-                    {
-                        if (TextUtils.equals("0000", gradBean.errorCode)) {
-                            ToastUtils.init().showSuccessToast(this, "抢到了，关闭该界面吧");
-                        }
-                    })), throwable -> {
-            },() -> {});
-        });
+                return true;
+            }
+            ToastUtils.init().showQuickToast(mBaseActivity, "当前无活动");
+            return false;
+        }).subscribe(strBean ->
+                Observable.fromArray(strs).subscribe(s -> model.requestWZ(strBean.data.token, s).subscribe(gradBean ->
+                {
+                    if (TextUtils.equals("0000", gradBean.errorCode)) {
+                        ToastUtils.init().showSuccessToast(this, "抢到了，关闭该界面吧");
+                    }
+                })), throwable -> {
+        }, () -> {
+        }));
     }
 }

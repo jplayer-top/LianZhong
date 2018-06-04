@@ -112,10 +112,20 @@ public class WhiteService extends Service {
                                     List<SampleBean.DataBean.ListBean> beans = sampleBean.data.list;
                                     if (beans.size() > 0) {
                                         if (beans.get(0).status != 4) {
-                                            if (beans.get(0).type==1) {
-                                                btn_no_common(8, "已开榜");
+
+                                            int month = calendar.get(Calendar.MONTH) + 1;
+                                            String monthStr = month > 9 ? month + "" : "0" + month;
+                                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                            String dayStr = day > 9 ? day + "" : "0" + day;
+                                            String format = String.format(Locale.CHINA, "%s-%s 10:00", monthStr, dayStr);
+
+                                            if (DateUtils.compareDate(DateUtils.convert(format), DateUtils.convert
+                                                    (sampleBean.data.list.get(0).sendTime)) < 0) {
+                                                if (beans.get(0).type == 1) {
+                                                    btn_no_common(8, "已开榜");
+                                                }
+                                                autoGrad(sampleBean.data);
                                             }
-                                            autoGrad(sampleBean.data);
                                         }
                                     }
                                 }, throwable -> {

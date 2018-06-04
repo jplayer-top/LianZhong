@@ -17,6 +17,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -58,6 +59,8 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     private String mUserNos;
     private String mAccessToken;
     private List<String> mUserNosList;
+    private List<SampleBean.DataBean.ListBean> mListBeanList;
+    private RecyclerView recyclerView2;
 
     @Override
     public void initSuperData(FrameLayout mFlRootView) {
@@ -67,6 +70,7 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         tvTime = mFlRootView.findViewById(R.id.tvTime);
         tvNum = mFlRootView.findViewById(R.id.tvNum);
         multipleStatusView = mFlRootView.findViewById(R.id.multiplestatusview);
+        recyclerView2 = mFlRootView.findViewById(R.id.recyclerView2);
         etPhone = mFlRootView.findViewById(R.id.etPhone);
         etPassword = mFlRootView.findViewById(R.id.etPassword);
         Button btnAdd = mFlRootView.findViewById(R.id.btnAdd);
@@ -76,9 +80,7 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         Button btnLog = mFlRootView.findViewById(R.id.btnLog);
         showLoading();
         getNames();
-        btnStart.setOnClickListener(v -> {
-            requestSign();
-        });
+        btnStart.setOnClickListener(v -> requestSign());
         presenter.requestHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]);
         presenter.requestHasHBList(mUserNos.split(",")[0], mAccessToken.split(",")[0]);
         RecyclerView recyclerView = mFlRootView.findViewById(R.id.recyclerView);
@@ -124,10 +126,6 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
             getMoney(btnTotal);
         });
         getMoney(btnTotal);
-
-
-
-
 
     }
 
@@ -217,11 +215,32 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
     }
 
     public void setHBOne(SampleBean sampleBean) {
+        mListBeanList = sampleBean.data.list;
         SampleBean.DataBean.ListBean bean = sampleBean.data.list.get(0);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
+        SampleAdapter adapter2 = new SampleAdapter(mListBeanList);
+        recyclerView2.setAdapter(adapter2);
+        adapter2.setOnItemChildClickListener((thisAdapter, view, position) ->
+        {
+            List<SampleBean.DataBean.ListBean> datas = thisAdapter.getData();
+            SampleBean.DataBean.ListBean listBean = datas.get(position);
+            getUserNo(listBean.id);
+            return false;
+        });
         if (bean.status != 4) {
             tvNum.setText(bean.num + "");
             tvTime.setText(bean.sendTime);
-            autoGrad(sampleBean.data);
+
+            Calendar calendar = Calendar.getInstance();
+            int month = calendar.get(Calendar.MONTH) + 1;
+            String monthStr = month > 9 ? month + "" : "0" + month;
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            String dayStr = day > 9 ? day + "" : "0" + day;
+            String format = String.format(Locale.CHINA, "%s-%s 10:00", monthStr, dayStr);
+
+            if (DateUtils.compareDate(DateUtils.convert(format), DateUtils.convert(bean.sendTime)) < 0) {
+                autoGrad(sampleBean.data);
+            }
         }
     }
 
@@ -232,6 +251,10 @@ public class SampleActivity extends SuperBaseActivity implements SampleContract.
         refreshLayout.finishRefresh();
         adapter.setNewData(data.list);
         autoGrad(data);
+    }
+
+    public void getOk() {
+
     }
 
     /**

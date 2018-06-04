@@ -25,4 +25,25 @@ public class DateUtils {
         }
         return 0;
     }
+
+    public static int compareDate(Date dt1, Date dt2) {
+        if (dt1.getTime() > dt2.getTime()) {
+            return 1;
+        } else if (dt1.getTime() < dt2.getTime()) {
+            return -1;
+        } else {//相等
+            return 0;
+        }
+    }
+
+    public static Date convert(String date) {
+        Date retValue = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA);
+        try {
+            retValue = sdf.parse(date);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+        }
+        return retValue;
+    }
 }
