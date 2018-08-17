@@ -49,10 +49,12 @@ public class SampleModel {
 
     public Observable<GradBean> requestHBY(String userNo) {
         String time = String.valueOf(new Date().getTime());
-        String parameter = String.format(Locale.CHINA, "{\"command\":\"submitJoinGames\",\"userNo\":\"%s\",\"money\":\"157\",\"channel\":\"1030020\",\"productName\":\"yccp\"}", userNo);
-        return RetrofitManager.init().reset("https://m.lechuangmingcai.com/", new JsonRefixInterceptor())
+        String parameter = String.format(Locale.CHINA, "{\"command\":\"submitJoinGames\",\"userNo\":\"%s\"," +
+                "\"money\":\"650\",\"channel\":\"1030020\",\"productName\":\"ltcp6\",\"activityType\":\"cash\"}",
+                userNo);
+        return RetrofitManager.init().reset("https://m.leader001.cn/", new JsonRefixInterceptor())
                 .reCreate(ApiService.class)
-                .getHBYBean(parameter, time, String.format(Locale.CHINA, "jQuery21407126036777626723_%s", time))
+                .getHBYBean(parameter, time, String.format(Locale.CHINA, "jQuery111308354322793667928_%s", time))
                 .compose(new IoMainSchedule<>());
     }
 
